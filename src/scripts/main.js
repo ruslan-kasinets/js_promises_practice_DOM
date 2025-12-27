@@ -64,7 +64,11 @@ const createMessage = (text, isError = false) => {
 };
 
 const successHandler = (successText) => createMessage(successText);
-const errorHandler = (errorText) => createMessage(errorText, true);
+const errorHandler = (errorText) =>
+  createMessage(
+    errorText instanceof Error ? errorText.message : String(errorText),
+    true,
+  );
 
 firstPromise.then(successHandler, errorHandler);
 secondPromise.then(successHandler);
