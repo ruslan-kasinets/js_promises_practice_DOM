@@ -3,14 +3,17 @@
 const body = document.body;
 
 const firstPromise = new Promise((resolve, reject) => {
-  const timerId = setTimeout(() => reject(new Error('Error')), 3000);
+  const timerId = setTimeout(
+    () => reject(new Error('First promise was rejected')),
+    3000,
+  );
 
   document.addEventListener(
     'mousedown',
     (e) => {
       if (e.button === 0) {
         clearTimeout(timerId);
-        resolve();
+        resolve('First promise was resolved');
       }
     },
     { once: true },
@@ -22,7 +25,7 @@ const secondPromise = new Promise((resolve, reject) => {
     'mousedown',
     (e) => {
       if (e.button === 0 || e.button === 2) {
-        resolve();
+        resolve('Second promise was resolved');
       }
     },
     { once: true },
@@ -44,7 +47,7 @@ const thirdPromise = new Promise((resolve, reject) => {
 
     if (rightClick && leftClick) {
       document.removeEventListener('mousedown', clickHandler);
-      resolve();
+      resolve('Third promise was resolved');
     }
   };
 
@@ -63,14 +66,6 @@ const createMessage = (text, isError = false) => {
 const successHandler = (successText) => createMessage(successText);
 const errorHandler = (errorText) => createMessage(errorText, true);
 
-firstPromise.then(
-  () =>
-    successHandler(
-      'First promise was resolved on a left click in the document',
-    ),
-  () => errorHandler('First promise was rejected in 3 seconds if not clicked'),
-);
-
-secondPromise.then(() => successHandler('Second promise was resolved'));
-
-thirdPromise.then(() => successHandler('Third promise was resolved'));
+firstPromise.then(successHandler, errorHandler);
+secondPromise.then(successHandler);
+thirdPromise.then(successHandler);
